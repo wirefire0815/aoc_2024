@@ -11,14 +11,14 @@ import (
 )
 
 func main() {
-	file, err := os.Open("./01/example.txt")
+	file, err := os.Open("./01/puzzle.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	defer file.Close()
 
-	p1(file)
+	p2(file)
 }
 
 func p1(f *os.File) {
@@ -61,4 +61,47 @@ func p1(f *os.File) {
 	}
 
 	fmt.Println("ANSWER: ", ret);	
+}
+
+func p2(f *os.File) {
+	scanner := bufio.NewScanner(f)
+	arr1 := []int{}
+	arr2 := []int{}
+
+	for scanner.Scan() {
+		line := strings.Split(scanner.Text(), "   ")
+
+		i1, err := strconv.ParseInt(line[0], 10, 32)
+		if err != nil {
+			log.Fatal("parsing")
+		}
+
+		arr1 = append(arr1, int(i1))
+
+		i2, err := strconv.ParseInt(line[1], 10, 32)
+		if err != nil {
+			log.Fatal("parsing")
+		}
+
+		arr2 = append(arr2, int(i2))
+	}
+
+	mappy := make(map[int]int)
+
+	for i := 0; i < len(arr2); i++ {
+		value, exists := mappy[arr2[i]]
+		 if exists {
+			mappy[arr2[i]] = value + 1
+		} else {
+			mappy[arr2[i]] = 1
+		}
+	}
+	fmt.Println("MAP: ", mappy)
+
+	sum := 0
+	for i := 0; i < len(arr1); i++ {
+		sum += arr1[i] * mappy[arr1[i]]	
+	}
+
+	fmt.Println("ANSWER: ", sum)
 }
